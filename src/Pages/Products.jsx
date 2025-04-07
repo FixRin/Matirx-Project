@@ -1,8 +1,8 @@
-import React, { useRef } from "react";
+import React, { useEffect, useRef } from "react";
 import "../Css/Products.css";
 ("use client");
 import designPhoto from "../Assets/Images/Wear.png";
-import { product } from "../Store";
+
 import { useState } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
@@ -47,7 +47,12 @@ import {
   PlusIcon,
   Squares2X2Icon,
 } from "@heroicons/react/20/solid";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+
+import { product } from "../Store";
+import { Link } from "react-router-dom";
+import { slugify } from "../Store/SlugConfig";
+import { fetchProductData } from "../Redux/ProductsSlice";
 
 const sortOptions = [
   { name: "Most Popular", href: "#", current: true },
@@ -106,6 +111,19 @@ function classNames(...classes) {
 }
 
 const Products = () => {
+    const { productItems, status, error } = useSelector(
+      (state) => state.ProductData
+    );
+    const dispatch = useDispatch();
+    useEffect(() => {
+      if (status === "idle") {
+        dispatch(fetchProductData());
+      }
+    }, [status, dispatch]);
+  
+    if (status === "failed") {
+      return <div>Error: {error}</div>;
+    }
   const progressCircle = useRef(null);
   const progressContent = useRef(null);
   const onAutoplayTimeLeft = (s, time, progress) => {
@@ -120,25 +138,28 @@ const Products = () => {
       className={` ${
         theme === "dark" ? "bg-texture bg-black text-white  " : "bg-texture "
       }`}
-    >
-      <Swiper 
-        spaceBetween={30}
-        centeredSlides={true}
-        autoplay={{
-          delay: 2500,
-          disableOnInteraction: false,
-        }}
-        pagination={{
-          clickable: true,
-        }}
-        navigation={true}
-        modules={[Autoplay, Pagination, Navigation]}
-        onAutoplayTimeLeft={onAutoplayTimeLeft}
-        className="mySwiper bg-transperent relative"
-      >
-        <SwiperSlide className="bg-transperent">
-          <div className="">
-            <video className="bg-transperent"
+
+    >{!productItems[0]?<div></div>:
+      <div>
+      <div className="swiper-container-wrapper">
+        <Swiper
+          spaceBetween={0}
+          centeredSlides={false}
+          autoplay={{
+            delay: 5500,
+            disableOnInteraction: false,
+          }}
+          pagination={{
+            clickable: true,
+          }}
+          navigation={true}
+          modules={[Autoplay, Pagination, Navigation]}
+          onAutoplayTimeLeft={onAutoplayTimeLeft}
+          className="mySwiper bg-transperent relative full-width-swiper"
+        >
+          <SwiperSlide className="bg-transperent  ">
+            <video
+              className="bg-transperent "
               playsInline
               autoPlay
               loop
@@ -150,20 +171,59 @@ const Products = () => {
                 src="//www.masongarments.com/cdn/shop/videos/c/vp/4042398e663243b09132eb1494274dfa/4042398e663243b09132eb1494274dfa.HD-1080p-7.2Mbps-40910469.mp4?v=0"
               />
             </video>
-          </div>
-         
-        </SwiperSlide> 
-        <SwiperSlide>Slide 1</SwiperSlide>
-          <SwiperSlide>Slide 3</SwiperSlide>
-          <SwiperSlide>Slide 4</SwiperSlide>
+          </SwiperSlide>
+          <SwiperSlide>
+            {" "}
+            <video
+              className="bg-transperent "
+              playsInline
+              autoPlay
+              loop
+              muted
+              poster="https://cdn.create.vista.com/api/media/small/332829178/stock-video-flirty-racial-woman-touching-hair-while-posing-isolated-beige?videoStaticPreview=true&token="
+            >
+              <source
+                type="video/mp4"
+                src="https://cdn.create.vista.com/api/media/medium/332829178/stock-video-flirty-racial-woman-touching-hair-while-posing-isolated-beige?token="
+              />
+            </video>
+          </SwiperSlide>
+          <SwiperSlide>
+          <video
+              className="bg-transperent "
+              playsInline
+              autoPlay
+              loop
+              muted
+              poster="https://cdn.create.vista.com/api/media/small/332829178/stock-video-flirty-racial-woman-touching-hair-while-posing-isolated-beige?videoStaticPreview=true&token="
+            >
+              <source
+                type="video/mp4"
+                src="https://cdn.create.vista.com/api/media/medium/785471632/stock-video-people-shot-monochrome-clothing-items-sweaters-jackets-jeans-hanger-clothes?token="
+              />
+            </video>
+          </SwiperSlide>
+          <SwiperSlide>  <video
+              className="bg-transperent "
+              playsInline
+              autoPlay
+              loop
+              muted
+              poster="https://cdn.create.vista.com/api/media/small/332829178/stock-video-flirty-racial-woman-touching-hair-while-posing-isolated-beige?videoStaticPreview=true&token="
+            >
+              <source
+                type="video/mp4"
+                src="https://cdn.create.vista.com/api/media/medium/783378304/stock-video-stack-boxes-words-books-clothes-written-them-boxes-piled-top?token="
+              />
+            </video></SwiperSlide>
           <div className="autoplay-progress" slot="container-end">
-          <svg viewBox="0 0 48 48" ref={progressCircle}>
-            <circle cx="24" cy="24" r="20"></circle>
-          </svg>
-          <span ref={progressContent}></span>
-        </div>
-          
-      </Swiper>
+            <svg viewBox="0 0 48 48" ref={progressCircle}>
+              <circle cx="24" cy="24" r="20"></circle>
+            </svg>
+            <span ref={progressContent}></span>
+          </div>
+        </Swiper>
+      </div>
       <div>
         <div>
           {/* Mobile filter dialog */}
@@ -471,7 +531,10 @@ const Products = () => {
                           </div>
                         </div>
                         <div className="grid w-full  grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
-                          {product.map((item) => (
+                          {productItems[0].Products.map((item) => (
+                                <Link
+                                key={item.id}
+                                to={`/product/${slugify(item.title)}`}>
                             <div
                               className="group relative mx-auto w-full max-w-72 px-8 pt-4"
                               key={item.id}
@@ -591,10 +654,12 @@ const Products = () => {
                                 {item.title}
                               </h3>
                             </div>
+                            </Link>
                           ))}
                         </div>
                       </div>
                     </div>
+                   
                   }
                 </div>
               </div>
@@ -707,7 +772,10 @@ const Products = () => {
             </div>
           </div>
         </div>
+    
       </div>
+      </div>
+      }
     </div>
   );
 };

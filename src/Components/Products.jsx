@@ -1,93 +1,164 @@
-import React, { useRef, useState } from "react";
-import { product } from "../Store";
+import React, { useEffect, useRef, useState } from "react";
+
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/all";
 import { useGSAP } from "@gsap/react";
 import Text from "./Text";
+import { Link } from "react-router-dom";
+import { slugify } from "../Store/SlugConfig";
+import { product } from "../Store";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchProductData } from "../Redux/ProductsSlice";
+
 gsap.registerPlugin(ScrollTrigger);
 export default function Component() {
+  
+  const { productItems, status, error } = useSelector(
+    (state) => state.ProductData
+  );
+  const dispatch = useDispatch();
+  useEffect(() => {
+    if (status === "idle") {
+      dispatch(fetchProductData());
+    }
+  }, [status, dispatch]);
+
+  if (status === "failed") {
+    return <div>Error: {error}</div>;
+  }
   let DivRef = useRef();
   const [isHoverable, setIsHoverable] = useState(true);
+  const [width, setWidth] = useState(window.innerWidth);
+    
+
+  useEffect(() => {
+    const handleResize = () => {
+      setWidth(window.innerWidth)
+      console.log("Window size:", window.innerWidth)
+    }
+
+    // Set initial width
+    handleResize()
+
+    window.addEventListener("resize", handleResize)
+
+    // Cleanup function to remove the event listener
+    return () => {
+      window.removeEventListener("resize", handleResize)
+    }
+  }, [])
+
+  // First animation
   useGSAP(() => {
-    gsap.fromTo(
-      img1,
-      { top: 0, right: 0, scale: 1 },
-      {
-        scale: 2.2,
-        top: 680,
-        left: 750,
-        scrollTrigger: {
-          trigger: img1,
-          start: 850,
-          end: 1100,
-          scrub: 3,
+    if (width > 1260) {
+      gsap.fromTo(
+        img1,
+        { top: 0, right: 0, scale: 1 },
+        {
+          scale: 2.2,
+          top: 680,
+          left: 750,
+          scrollTrigger: {
+            trigger: img1,
+            start: 850,
+            end: 1100,
+            scrub: 3,
+          },
+          onStart: () => setIsHoverable(false),
+          onReverseComplete: () => setIsHoverable(true),
         },
-        onStart: () => setIsHoverable(false),
-        onReverseComplete: () => setIsHoverable(true),
-      }
-    );
-  }, []);
+      )
+    } else {
+      // Reset animation when below threshold
+      gsap.set(img1, { clearProps: "all" })
+    }
+  }, [width]) // Add width as dependency to re-run when width changes
+
+  // Second animation
   useGSAP(() => {
-    gsap.fromTo(
-      img2,
-      { top: 0, right: 0, scale: 1 },
-      {
-        scale: 2.6,
-        top: 2550,
-        right: 150,
-        scrollTrigger: {
-          trigger: img1,
-          start: 2350,
-          end: 2850,
-          scrub: 3,
+    if (width > 1260) {
+      gsap.fromTo(
+        img2,
+        { top: 0, right: 0, scale: 1 },
+        {
+          scale: 2.6,
+          top: 2550,
+          right: 150,
+          scrollTrigger: {
+            trigger: img1,
+            start: 2350,
+            end: 2850,
+            scrub: 3,
+          },
+          onStart: () => setIsHoverable(false),
         },
-        onStart: () => setIsHoverable(false),
-      }
-    );
-  }, []);
+      )
+    } else {
+      // Reset animation when below threshold
+      gsap.set(img2, { clearProps: "all" })
+    }
+  }, [width]) // Add width as dependency
+
+  // Third animation
   useGSAP(() => {
-    gsap.fromTo(
-      img3,
-      { top: 0, right: 0, scale: 1 },
-      {
-        scale: 2.6,
-        top: 1930,
-        left: 200,
-        scrollTrigger: {
-          trigger: img1,
-          start: 2050,
-          end: 2350,
-          scrub: 3,
+    if (width > 1260) {
+      gsap.fromTo(
+        img3,
+        { top: 0, right: 0, scale: 1 },
+        {
+          scale: 2.6,
+          top: 1930,
+          left: 200,
+          scrollTrigger: {
+            trigger: img1,
+            start: 2050,
+            end: 2350,
+            scrub: 3,
+          },
+          onStart: () => setIsHoverable(false),
         },
-        onStart: () => setIsHoverable(false),
-      }
-    );
-  }, []);
+      )
+    } else {
+      // Reset animation when below threshold
+      gsap.set(img3, { clearProps: "all" })
+    }
+  }, [width]) // Add width as dependency
+
+  // Fourth animation
   useGSAP(() => {
-    gsap.fromTo(
-      img4,
-      { top: 0, right: 0, scale: 1 },
-      {
-        scale: 2.3,
-        top: 1350,
-        right: 850,
-        scrollTrigger: {
-          
-          trigger: img1,
-          start: 1250,
-          end: 1550,
-          scrub: 3,
+    if (width > 1260) {
+      gsap.fromTo(
+        img4,
+        { top: 0, right: 0, scale: 1 },
+        {
+          scale: 2.3,
+          top: 1350,
+          right: 850,
+          scrollTrigger: {
+            trigger: img1,
+            start: 1250,
+            end: 1550,
+            scrub: 3,
+          },
+          onStart: () => setIsHoverable(false),
         },
-        onStart: () => setIsHoverable(false),
-      }
-    );
-  }, []);
+      )
+    } else {
+      // Reset animation when below threshold
+      gsap.set(img4, { clearProps: "all" })
+    }
+  }, [width]) // Add width as depe
   return (
     <div>
       <div className="mx-auto w-full max-w-6xl pb-10 mb-10 ">
         <Text />
         <div className="grid w-full  grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
           {product.map((item) => (
+             <Link
+             key={item.id}
+             to={`/product/${slugify(item.title)}`}
+             
+           >
             <div
               className="group relative mx-auto w-full max-w-72 px-8 pt-4"
               key={item.id}
@@ -188,6 +259,7 @@ export default function Component() {
                       />
                     </filter>
                   </svg>
+                
                 )}
                 <div ref={DivRef}>
                   <img
@@ -218,6 +290,7 @@ export default function Component() {
                 {item.title}
               </h3>
             </div>
+            </Link>
           ))}
         </div>
       </div>

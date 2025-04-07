@@ -19,9 +19,8 @@ import Checkout from "./Pages/Checkout";
 import OrderConfirmation from "./Pages/OrderConfirmation";
 import ProductDetails from "./Pages/ProductDetails";
 import UpdatePassword from "./Pages/UpdatePassword";
-
+import Test from "./Pages/Test";
 const App = () => {
-
   return (
     <BrowserRouter>
       <Header />
@@ -45,9 +44,9 @@ const App = () => {
           path={"/orderConfirmation"}
           element={<OrderConfirmation />}
         ></Route>
-        <Route path="/productDetail" element={<ProductDetails />}></Route>
+        <Route path="/product/:slug" element={<ProductDetails />} />
         <Route path="/update-password" element={<UpdatePassword />}></Route>
-   
+        <Route path="/test" element={<Test />}></Route>
         <Route path="*" element={<NotFound />}></Route>
       </Routes>
 

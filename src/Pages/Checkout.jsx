@@ -1,8 +1,17 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import { useCart } from "react-use-cart";
 
 export default function CheckoutForm() {
   const [deliveryMethod, setDeliveryMethod] = useState("standard");
+  const {
+    isEmpty,
+    items,
+    updateItemQuantity,
+    removeItem,
+    cartTotal,
+    emptyCart,
+  } = useCart();
 
   return (
     <div className="bg-texture">
@@ -327,62 +336,65 @@ export default function CheckoutForm() {
             <div className="rounded-lg border p-6 bg-white">
               <h2 className="text-lg font-semibold mb-4">Order summary</h2>
               <div className="space-y-4">
-                <div className="flex items-center justify-between py-4 border-b">
-                  <div className="flex items-center space-x-4">
-                    <div className="w-16 h-16 bg-gray-100 rounded-md"></div>
-                    <div>
-                      <p className="font-medium">Basic Tee</p>
-                      <p className="text-sm text-gray-500">Black / Large</p>
-                    </div>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <span className="text-sm font-medium">$32.00</span>
-                    <select className="px-2 py-1 border rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
-                      {[1, 2, 3, 4, 5].map((num) => (
-                        <option key={num} value={num}>
-                          {num}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-                </div>
+              <div>
+      {" "}
+      <ul role="list" className="-my-6 divide-y divide-gray-200">
+        
+        {isEmpty?<div className="text-center my-10">Your order is Empty </div>:items.map((item) => (
+          <li key={item.id} className="flex py-6">
+            <div className="size-24 shrink-0 overflow-hidden rounded-md border border-gray-200">
+              <img
+                alt={item.imageAlt}
+                src={item.image}
+                className="size-full object-cover"
+              />
+            </div>
 
-                <div className="flex items-center justify-between py-4 border-b">
-                  <div className="flex items-center space-x-4">
-                    <div className="w-16 h-16 bg-gray-100 rounded-md"></div>
-                    <div>
-                      <p className="font-medium">Basic Tee</p>
-                      <p className="text-sm text-gray-500">Sand / Large</p>
-                    </div>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <span className="text-sm font-medium">$32.00</span>
-                    <select className="px-2 py-1 border rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
-                      {[1, 2, 3, 4, 5].map((num) => (
-                        <option key={num} value={num}>
-                          {num}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
+            <div className="ml-4 flex flex-1 flex-col">
+              <div>
+                <div className="flex justify-between text-base font-medium text-gray-900">
+                  <h3>
+                    <a href={item.href}>{item.name}</a>
+                  </h3>
+                  <p className="ml-4">{item.price}</p>
                 </div>
+                <p className="mt-1 text-sm text-gray-500">{item.color}</p>
+              </div>
+              <div className="flex flex-1 items-end justify-between text-sm">
+                <p className="text-gray-500">Qty {item.quantity}</p>
 
+                <div className="flex">
+                  <button
+                    onClick={() => removeItem(item.id)}
+                    type="button"
+                    className="font-medium text-indigo-600 hover:text-indigo-500"
+                  >
+                    Remove
+                  </button>
+                </div>
+              </div>
+            </div>
+          </li>
+        ))}
+      </ul>
+      
+    </div>
                 <div className="space-y-2">
                   <div className="flex justify-between">
                     <span>Subtotal</span>
-                    <span>$64.00</span>
+                    <span>${cartTotal}</span>
                   </div>
                   <div className="flex justify-between">
                     <span>Shipping</span>
-                    <span>$5.00</span>
+                    <span>${deliveryMethod==="standard"?5:15}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span>Taxes</span>
-                    <span>$5.52</span>
+                    <span>Taxes(18%)</span>
+                    <span>${((cartTotal+(deliveryMethod==="standard"?5:15))*18/100).toFixed(2)}</span>
                   </div>
                   <div className="flex justify-between text-lg font-semibold pt-4 border-t">
                     <span>Total</span>
-                    <span>$74.52</span>
+                    <span>${((cartTotal+(deliveryMethod==="standard"?5:15)+(cartTotal+(deliveryMethod==="standard"?5:15))*18/100)).toFixed(1)}</span>
                   </div>
                 </div>
 

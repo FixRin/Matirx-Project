@@ -6,9 +6,12 @@ import Slider from "../Components/Slider";
 import NewsLetter from "../Components/NewsLetter";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchData } from "../Redux/FetchLangData";
+
 /*hero hissseine bol a aydin */
 
+
 const Home = () => {
+
   const { items, status, error } = useSelector((state) => state.data);
   const dispatch = useDispatch();
   useEffect(() => {
@@ -23,7 +26,7 @@ const Home = () => {
   const theme = useSelector((state) => state.theme.mode);
   return (
     <div>
-      {items?<div>fsdfsdf</div>:
+      {!items?<div>fsdfsdf</div>:
       <div
         className={`${
           theme === "dark" ? "bg-texture bg-black text-white" : "bg-texture"

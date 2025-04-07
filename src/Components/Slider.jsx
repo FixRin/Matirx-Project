@@ -1,26 +1,44 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchData } from "../Redux/FetchLangData";
 import { Link } from "react-router-dom";
+import { product } from "../Store";
+
+
 export default function Component() {
+  const [width, setWidth] = useState(window.innerWidth);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setWidth(window.innerWidth);
+      console.log("Window size:", window.innerWidth);
+    };
+
+    window.addEventListener("resize", handleResize);
+
+    // Cleanup function to remove the event listener
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
+product
   const Lang = useSelector((state) => state.lang.mode);
   const { items, status, error } = useSelector((state) => state.data);
   const dispatch = useDispatch();
   useEffect(() => {
     if (status === "idle") {
       dispatch(fetchData());
-      
     }
   }, [status, dispatch]);
-
-
 
   if (status === "failed") {
     return <div>Error: {error}</div>;
   }
   return (
-    <div >
-      {!items[7]?<div></div>:
+    <div>
+      {!items[7] ? (
+        <div></div>
+      ) : (
         <div>
           <section className="px-6 py-16 [.header+&]:pt-44 [.header+&]:md:pt-32 sticky top-[calc(0*2rem)] bg-texture bg-brand-blue text-white">
             <div className="mx-auto w-full max-w-6xl">
@@ -34,14 +52,13 @@ export default function Component() {
                   <div className="slide-in">
                     <div className="max-w-md text-lg leading-relaxed">
                       <p>
-                        <strong>
-                        {items[7][Lang].Slider[1]}
-                        </strong>
+                        <strong>{items[7][Lang].Slider[1]}</strong>
                       </p>
                     </div>
                   </div>
                   <div className="slide-in">
-                    <Link to='/products'
+                    <Link
+                      to="/products"
                       className="button-cutout-black h-[50px] group mx-4 inline-flex items-center bg-gradient-to-b from-25% to-75% bg-[length:100%_400%] font-bold transition-[filter,background-position] duration-300 hover:bg-bottom gap-3 px-1 text-lg ~py-2.5/3 from-brand-lime to-brand-orange text-black"
                       href="https://suburbia-skate.netlify.app/"
                     >
@@ -59,7 +76,15 @@ export default function Component() {
                       srcSet="https://images.prismic.io/suburbia/Z1UNmpbqstJ98M3k_paint-background.png?auto=format%2Ccompress&fit=max&w=1080 1x, https://images.prismic.io/suburbia/Z1UNmpbqstJ98M3k_paint-background.png?auto=format%2Ccompress&fit=max&w=1920 2x"
                     />
                   </div>
-                  <div className="col-start-1 row-start-1 transition-transform h-full w-full place-items-center"></div>
+                  <div className="col-start-1 row-start-1 transition-transform h-full w-full place-items-center">
+                  {1260<width?<div></div>:
+                  <img
+                      className="h-full max-h-[500px] w-auto "
+                      height={500}
+                      width={331}
+                      src={product[0].img}
+                    />}
+                  </div>
                 </div>
               </div>
             </div>
@@ -71,20 +96,19 @@ export default function Component() {
                 <div className="flex flex-col items-center gap-8 text-center md:items-start md:text-left md:order-2">
                   <div className="slide-in">
                     <h2 className="font-sans uppercase text-7xl">
-                    {items[7][Lang].Slider[2]}
+                      {items[7][Lang].Slider[2]}
                     </h2>
                   </div>
                   <div className="slide-in">
                     <div className="max-w-md text-lg leading-relaxed">
                       <p>
-                        <strong>
-                        {items[7][Lang].Slider[3]}
-                        </strong>
+                        <strong>{items[7][Lang].Slider[3]}</strong>
                       </p>
                     </div>
                   </div>
                   <div className="slide-in">
-                    <Link to='/products'
+                    <Link
+                      to="/products"
                       className="button-cutout-blue h-[50px] group mx-4 inline-flex items-center bg-gradient-to-b from-25% to-75% bg-[length:100%_400%] font-bold transition-[filter,background-position] duration-300 hover:bg-bottom gap-3 px-1 text-lg ~py-2.5/3 from-brand-lime to-brand-orange text-black z-50"
                       href="https://suburbia-skate.netlify.app/"
                     >
@@ -102,7 +126,15 @@ export default function Component() {
                       srcSet="https://images.prismic.io/suburbia/Z1UNmpbqstJ98M3k_paint-background.png?auto=format%2Ccompress&fit=max&w=1080 1x, https://images.prismic.io/suburbia/Z1UNmpbqstJ98M3k_paint-background.png?auto=format%2Ccompress&fit=max&w=1920 2x"
                     />
                   </div>
-                  <div className="col-start-1 row-start-1 transition-transform h-full w-full place-items-center"></div>
+                  <div className="col-start-1 row-start-1 transition-transform h-full w-full place-items-center">
+                  {1260<width?<div></div>:
+                  <img
+                      className="h-full max-h-[500px] w-auto "
+                      height={500}
+                      width={331}
+                      src={product[3].img}
+                    />}
+                  </div>
                 </div>
               </div>
             </div>
@@ -114,18 +146,17 @@ export default function Component() {
                 <div className="flex flex-col items-center gap-8 text-center md:items-start md:text-left">
                   <div className="slide-in">
                     <h2 className="font-sans uppercase text-7xl">
-                    {items[7][Lang].Slider[4]}
+                      {items[7][Lang].Slider[4]}
                     </h2>
                   </div>
                   <div className="slide-in">
                     <div className="max-w-md text-lg leading-relaxed">
-                      <p>
-                      {items[7][Lang].Slider[5]}
-                      </p>
+                      <p>{items[7][Lang].Slider[5]}</p>
                     </div>
                   </div>
                   <div className="slide-in">
-                    <Link to='/products'
+                    <Link
+                      to="/products"
                       className="button-cutout-black h-[50px] group mx-4 inline-flex items-center bg-gradient-to-b from-25% to-75% bg-[length:100%_400%] font-bold transition-[filter,background-position] duration-300 hover:bg-bottom gap-3 px-1 text-lg ~py-2.5/3 from-brand-lime to-brand-orange text-black z-10"
                       href="https://suburbia-skate.netlify.app/"
                     >
@@ -143,7 +174,16 @@ export default function Component() {
                       srcSet="https://images.prismic.io/suburbia/Z1UNmpbqstJ98M3k_paint-background.png?auto=format%2Ccompress&fit=max&w=1080 1x, https://images.prismic.io/suburbia/Z1UNmpbqstJ98M3k_paint-background.png?auto=format%2Ccompress&fit=max&w=1920 2x"
                     />
                   </div>
-                  <div className="col-start-1 row-start-1 transition-transform h-full w-full place-items-center"></div>
+                  <div className="col-start-1 row-start-1 transition-transform h-full w-full place-items-center">
+                  {1260<width?<div></div>:
+                  <img
+                      className="h-full max-h-[500px] w-auto "
+                      height={500}
+                      width={331}
+                      src={product[2].img}
+                    />
+                  }
+                  </div>
                 </div>
               </div>
             </div>
@@ -155,18 +195,17 @@ export default function Component() {
                 <div className="flex flex-col items-center gap-8 text-center md:items-start md:text-left md:order-2">
                   <div className="slide-in">
                     <h2 className="font-sans uppercase text-7xl">
-                    {items[7][Lang].Slider[6]}
+                      {items[7][Lang].Slider[6]}
                     </h2>
                   </div>
                   <div className="slide-in">
                     <div className="max-w-md text-lg leading-relaxed">
-                      <p>
-                      {items[7][Lang].Slider[7]}
-                      </p>
+                      <p>{items[7][Lang].Slider[7]}</p>
                     </div>
                   </div>
                   <div className="slide-in">
-                    <Link to='/products'
+                    <Link
+                      to="/products"
                       className="button-cutout-green h-[50px] group mx-4 inline-flex items-center bg-gradient-to-b from-25% to-75% bg-[length:100%_400%] font-bold transition-[filter,background-position] duration-300 hover:bg-bottom gap-3 px-1 text-lg ~py-2.5/3 from-brand-orange to-brand-lime text-black hover:text-black z-10"
                       href="https://suburbia-skate.netlify.app/"
                     >
@@ -184,13 +223,21 @@ export default function Component() {
                       srcSet="https://images.prismic.io/suburbia/Z1UNmpbqstJ98M3k_paint-background.png?auto=format%2Ccompress&fit=max&w=1080 1x, https://images.prismic.io/suburbia/Z1UNmpbqstJ98M3k_paint-background.png?auto=format%2Ccompress&fit=max&w=1920 2x"
                     />
                   </div>
-                  <div className="col-start-1 row-start-1 transition-transform h-full w-full place-items-center"></div>
+                  <div className="col-start-1 row-start-1 transition-transform h-full w-full place-items-center">
+                    {1260<width?<div></div>:
+                    <img
+                      className="h-full max-h-[500px] w-auto "
+                      height={500}
+                      width={331}
+                      src={product[1].img}
+                    />}
+                  </div>
                 </div>
               </div>
             </div>
           </section>
         </div>
-      }
+      )}
     </div>
   );
 }
