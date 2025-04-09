@@ -1,11 +1,17 @@
 import React from "react";
 import "../Css/BlogDetails.css";
+import { useSelector } from "react-redux";
 const BlogDetails = () => {
+    const theme = useSelector((state) => state.theme.mode);
   return (
-    <div>
+    <div    className={` ${
+      theme === "dark"
+        ? "bg-texture bg-gray-900 text-white pt-20 "
+        : "bg-texture pt-20"
+    }`} >
      
-      <div className="flex flex-col items-center justify-center  w-100 pt-20 lg:pt-5">
-      <div className="b-post-header__category text-black pt-40"><h1 className="text-2xl">Aydin Aliyev</h1></div>
+      <div className="flex flex-col items-center justify-center  w-100 pt-24 lg:pt-5">
+      <div className="b-post-header__category  pt-12"><h1 className="text-2xl">Aydin Aliyev</h1></div>
       <time className="b-post-header__date" dateTime="2017-02-21T13:18:13.595Z">
         Feb 21
       </time>

@@ -19,9 +19,11 @@ function WishlistSidebar() {
   const handleClearWishlist = () => {
     dispatch(clearWishlist());
   };
-
+    const theme = useSelector((state) => state.theme.mode);
   return (
-    <div className="  p-4 py-24 bg-texture">
+    <div 
+    className={`${theme==="dark"?'bg-texture p-4 py-24 bg-gray-900 text-white':'bg-texture p-4 py-24'}`}
+    >
       <div className="flex justify-between items-center mb-4 ">
         <h2 className="text-2xl font-bold">Wishlist</h2>
         {wishlistItems.length > 0 && (

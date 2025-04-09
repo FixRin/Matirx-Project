@@ -58,25 +58,37 @@ const Register = () => {
   }
 
   const handleRegister = async (e) => {
-    e.preventDefault()
-    if (!isValid) return
-    setLoading(true)
-
+    e.preventDefault();
+    if (!isValid) return;
+    setLoading(true);
+  
     try {
-      const { user, error } = await supabase.auth.signUp({ email, password })
-      if (error) {
-        throw error
+      const { data, error } = await supabase.auth.signUp({
+        email,
+        password
+      });
+  console.log(data)
+      if (error) throw error;
+  
+      alert("Registration successful! Check your email for confirmation.");
+  
+      if (data?.user) {
+        await supabase.from('profiles').insert([
+          {
+            id: data.user.id,
+            email: data.user.email,
+          }
+        ]);
+        
       }
-      // Optionally redirect the user to a different page after successful registration.
-      // For example: navigate('/dashboard');
-      alert("Registration successful! Check your email for confirmation.")
+  
     } catch (error) {
-      alert(error.message)
+      alert(error.message);
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
-
+  };
+  
 
   return (
     <div>

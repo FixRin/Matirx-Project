@@ -1,6 +1,7 @@
 
 
 import { useState } from "react";
+import { useSelector } from "react-redux";
 
 export default function ProductReviews() {
   // Product data
@@ -60,7 +61,7 @@ export default function ProductReviews() {
       comment: "",
     });
   };
-
+  const theme = useSelector((state) => state.theme.mode);
   // Calculate average rating
   const averageRating =
     reviews.reduce((acc, review) => acc + review.rating, 0) / reviews.length;
@@ -108,7 +109,9 @@ export default function ProductReviews() {
       </div>
 
       {/* Add Review Form */}
-      <div className="bg-white rounded-lg shadow-md p-6">
+      <div
+       className={`${theme==='dark'? "bg-cyan-950 rounded-lg shadow-md p-6 text-gray-400":' rounded-lg bg-white shadow-md p-6'}`}
+      >
         <h2 className="text-xl font-bold mb-4">Write a Review</h2>
         <form onSubmit={addReview} className="space-y-4">
           

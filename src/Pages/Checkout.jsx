@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { useCart } from "react-use-cart";
 
@@ -12,9 +13,9 @@ export default function CheckoutForm() {
     cartTotal,
     emptyCart,
   } = useCart();
-
+  const theme = useSelector((state) => state.theme.mode);
   return (
-    <div className="bg-texture">
+    <div  className={`${theme==="dark"?'bg-texture bg-gray-900 text-white':'bg-texture'}`}>
       <div className="mx-auto max-w-7xl px-4 py-24">
         <div className="grid gap-8 md:grid-cols-2">
           {/* Left Column - Form */}
@@ -333,7 +334,9 @@ export default function CheckoutForm() {
 
           {/* Right Column - Order Summary */}
           <div>
-            <div className="rounded-lg border p-6 bg-white">
+            <div
+           className= {`${theme==="dark"?'bg-texture rounded-lg border p-6 bg-gray-900 text-white':'rounded-lg border p-6 bg-texture'}`}
+            >
               <h2 className="text-lg font-semibold mb-4">Order summary</h2>
               <div className="space-y-4">
               <div>
@@ -352,7 +355,7 @@ export default function CheckoutForm() {
 
             <div className="ml-4 flex flex-1 flex-col">
               <div>
-                <div className="flex justify-between text-base font-medium text-gray-900">
+                <div className="flex justify-between text-base font-medium ">
                   <h3>
                     <a href={item.href}>{item.name}</a>
                   </h3>

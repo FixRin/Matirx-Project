@@ -170,7 +170,7 @@ const {cartTotal} = useCart()
                 className="w-24 h-24 object-contain"
               />
             </Link>
-            <div className="xl:block flex-1 xl:flex hidden    justify-center gap-5 Pages">
+            <div className={`${theme==='dark'?'xl:block flex-1 xl:flex hidden  text-gray-300   justify-center gap-5 Pages':'xl:block flex-1 xl:flex hidden     justify-center gap-5 Pages'}`}>
               <ul className="flex-1 flex items-center  justify-center gap-5 Pages ">
                 <li>
                   <NavLink to="/" className="homeLink">
@@ -267,18 +267,18 @@ const {cartTotal} = useCart()
                 </button>
               </Link>
             </div>
-            <div className="xl:hidden block pt-6  ">
+            <div className="xl:hidden block pt-6   ">
               {mobileNavOpen?<FaXmark   onClick={() => setMobileNavOpen(!mobileNavOpen)}
-                className=" text-4xl"/>:
+                    className={`${theme==='dark'? "text-4xl text-gray-400":'text-4xl'}`}/>:
               <RxHamburgerMenu
                 onClick={() => setMobileNavOpen(!mobileNavOpen)}
-                className=" text-4xl"
+                className={`${theme==='dark'? "text-4xl text-gray-400":'text-4xl'}`}
               />}
               <div
-                className={mobileNavOpen ? "MenuItems active   " : "MenuItems  "}
+                className={mobileNavOpen ? "MenuItems active     " : "MenuItems  "}
               >
                 {" "}
-                <ul className="flex-col mt-20 flex items-center  justify-center gap-5 Pages  ">
+                <ul className="flex-col mt-20 flex items-center  justify-center gap-5 Pages   ">
                   <li>
                     <NavLink to="/" className="homeLink">
                       {items[1][Lang].Header[0][0]}

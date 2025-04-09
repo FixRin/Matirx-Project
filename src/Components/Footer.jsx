@@ -22,7 +22,7 @@ export default function Footer() {
   }, [])
 
   return (
-    <div className={`${theme==="dark"?'bg-texture bg-black text-white':'bg-texture'}`}>
+    <div className={`${theme==="dark"?'bg-texture bg-gray-900 text-white':'bg-texture'}`}>
       <footer className="footer w-full " >
         <div className="bubbles" ref={bubblesContainerRef}></div>
         <div className="footer-content">

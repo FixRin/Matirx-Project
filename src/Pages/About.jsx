@@ -22,7 +22,7 @@ export default function App() {
   return (
     <div
       className={`${
-        theme === "dark" ? "bg-texture bg-black text-white " : "bg-texture"
+        theme === "dark" ? "bg-texture bg-gray-900 text-white " : "bg-texture"
       }`}
     >
       {!items[5] ? (

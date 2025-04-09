@@ -51,7 +51,7 @@ const Login = () => {
         <div
           className={`${
             theme === "dark"
-              ? "bg-texture bg-black text-white"
+              ? "bg-texture bg-gray-900 text-white"
               : "bg-texture text-black"
           }flex min-h-full flex-col justify-center px-6 py-12 lg:px-8`}
         >

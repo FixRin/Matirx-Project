@@ -129,7 +129,7 @@ export default function ProductPage() {
       comment: setReviewText,
     });
   };
-
+  const theme = useSelector((state) => state.theme.mode);
   // Star icon component using HTML/CSS
   const StarIcon = ({ filled, forRef }) => (
     <svg
@@ -142,7 +142,9 @@ export default function ProductPage() {
     </svg>
   );
   return (
-    <div className="bg-texture">
+    <div    className={` ${
+      theme === "dark" ? "bg-texture bg-gray-900 text-white  " : "bg-texture "
+    }`}>
       {!producta ? (
         <div></div>
       ) : (
@@ -242,6 +244,7 @@ export default function ProductPage() {
                         name: producta.title,
                         image: producta.img,
                         color: selectedColor,
+                        desc:producta.desc
                       })
                     }
                     className="flex-1  h-[40px] mx-5 button-cutout-black group justify-center   inline-flex items-center bg-gradient-to-b from-25% to-75% bg-[length:100%_400%] font-bold transition-[filter,background-position] duration-300 hover:bg-bottom gap-3 px-1 text-lg ~py-2.5/3 from-brand-purple to-brand-lime text-white hover:text-black"
@@ -255,10 +258,7 @@ export default function ProductPage() {
                   <div>
                     <h3 className="font-medium mb-2">Description</h3>
                     <p className="text-sm text-gray-600">
-                      The Basic Tee is an honest new take on a classic. The tee
-                      uses super soft, pre-shrunk cotton for true comfort and a
-                      dependable fit. They are hand cut and sewn locally, with a
-                      special dye technique that gives each tee it's own look.
+                {producta.desc}
                     </p>
                     <p className="text-sm text-gray-600 mt-2">
                       Looking for the perfect tee? The Basic Tee is comfortable

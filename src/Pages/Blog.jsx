@@ -28,7 +28,7 @@ const Blog = () => {
     <div
       className={` ${
         theme === "dark"
-          ? "bg-texture bg-black text-white pt-20 "
+          ? "bg-texture bg-gray-900 text-white pt-20 "
           : "bg-texture pt-20"
       }`}
     >
