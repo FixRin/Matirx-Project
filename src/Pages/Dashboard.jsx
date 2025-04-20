@@ -8,13 +8,16 @@ import {
   ChevronDown,
   Home,
   Layers,
+  NotepadText,
   Menu,
   MessageSquare,
   PieChart,
   Settings,
   User,
   Users,
+  Newspaper,
 } from "lucide-react";
+import UserSettings from "../Components/UserSettings";
 import { useSelector } from "react-redux";
 import CalendarApp from "../Components/CalendarApp";
 import LineChart from "../Components/LineChart";
@@ -22,15 +25,48 @@ import RadarChartExample from "../Components/Radar-Chart";
 import supabase from "../Utils/Supabase";
 import UsersProfile from "../Components/UsersProfile";
 import ProductDatasDashboard from "../Components/ProductDatasDashboard";
+import Orders from "../Components/Orders";
+import RecentOrders from "../Components/RecentOrders";
 export default function Dashboard() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [activeTab, setActiveTab] = useState("dashboard");
   const [data, setData] = useState(null);
+  const [profilesDatas, setProfilesDatas] = useState();
   const toggleSidebar = () => {
     setSidebarOpen(!sidebarOpen);
   };
   const theme = useSelector((state) => state.theme.mode);
- 
+  const [session, setSession] = useState(null);
+
+  const use = async () => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session);
+    });
+
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      setSession(session);
+    });
+
+    return () => subscription.unsubscribe();
+  };
+  useEffect(() => {
+    use();
+  }, []);
+
+  const using = async () => {
+    let { data: profiles, error } = await supabase.from("profiles").select("*");
+    setProfilesDatas(profiles);
+    setData(
+      profiles[profiles.findIndex((user) => user.email === session.user.email)]
+    );
+  };
+
+  useEffect(() => {
+    using();
+  }, [session]);
+
   return (
     <div
       className={` ${
@@ -41,13 +77,15 @@ export default function Dashboard() {
     >
       {/* Sidebar */}
       <div
-        className={`bg-white  shadow-lg transition-all duration-300 ${
+        className={`${
+          theme === "dark" ? " bg-gray-800/[0.6]" : "bg-white"
+        }  shadow-lg transition-all duration-300 ${
           sidebarOpen ? "w-64" : "w-20"
         } md:relative md:block`}
       >
         <div className="flex items-center justify-between p-4 border-b">
           <img
-            src="https://www.chromethemer.com/wallpapers/chromebook-wallpapers/images/960/batman-chromebook-wallpaper.jpg"
+            src={data ? data.ProfilePicture : "s"}
             className={`rounded-2xl  font-bold  ${
               !sidebarOpen && "hidden"
             } md:block`}
@@ -59,7 +97,7 @@ export default function Dashboard() {
             <Menu className="h-6 w-6" />
           </button>
         </div>
-        <nav className="p-4">
+        <nav className="p-4 ">
           <ul className="space-y-2">
             <SidebarItem
               icon={<Home className="h-5 w-5" />}
@@ -83,19 +121,20 @@ export default function Dashboard() {
               collapsed={!sidebarOpen}
             />
             <SidebarItem
-              icon={<BarChart className="h-5 w-5" />}
-              title="Analytics"
-              isActive={activeTab === "analytics"}
-              onClick={() => setActiveTab("analytics")}
-              collapsed={!sidebarOpen}
-            />
-            <SidebarItem
-              icon={<MessageSquare className="h-5 w-5" />}
+              icon={<NotepadText className="h-5 w-5" />}
               title="Messages"
               isActive={activeTab === "messages"}
               onClick={() => setActiveTab("messages")}
               collapsed={!sidebarOpen}
             />
+            <SidebarItem
+              icon={<Newspaper className="h-5 w-5" />}
+              title="Blog"
+              isActive={activeTab === "Blog"}
+              onClick={() => setActiveTab("Blog")}
+              collapsed={!sidebarOpen}
+            />
+
             <SidebarItem
               icon={<Calendar className="h-5 w-5" />}
               title="Calendar"
@@ -117,7 +156,11 @@ export default function Dashboard() {
       {/* Main Content */}
       <div className="flex-1 flex flex-col overflow-hidden ">
         {/* Header */}
-        <header className="bg-white shadow-sm ">
+        <header
+          className={`${
+            theme === "dark" ? "bg-gray-800/[0.6]" : "bg-white"
+          } shadow-sm `}
+        >
           <div className="flex items-center justify-between p-4">
             <div className="flex items-center gap-4">
               <button
@@ -126,7 +169,7 @@ export default function Dashboard() {
               >
                 <Menu className="h-6 w-6" />
               </button>
-              <h2 className="text-xl font-semibold text-gray-800">
+              <h2 className="text-xl font-semibold ">
                 {activeTab.charAt(0).toUpperCase() + activeTab.slice(1)}
               </h2>
             </div>
@@ -136,10 +179,9 @@ export default function Dashboard() {
                 <span className="absolute top-0 right-0 h-2 w-2 rounded-full bg-red-500"></span>
               </button>
               <div className="flex items-center gap-2 cursor-pointer">
-                <div className="h-8 w-8 rounded-full bg-gray-200 flex items-center justify-center">
-                  <User className="h-5 w-5" />
-                </div>
-                <span className="hidden md:block font-medium">Admin User</span>
+                <span className="hidden md:block font-medium">
+                  Admin Dashboard
+                </span>
                 <ChevronDown className="h-4 w-4 text-gray-500" />
               </div>
             </div>
@@ -147,11 +189,11 @@ export default function Dashboard() {
         </header>
 
         {/* Content */}
-        <main className="flex-1 overflow-auto p-4">
-          {activeTab === "dashboard" && <DashboardContent />}
+        <main className="flex-1 overflow-auto p-4 ">
+          {activeTab === "dashboard" && <DashboardContent data={profilesDatas}/>}
           {activeTab === "users" && <UsersProfile />}
           {activeTab === "products" && <ProductDatasDashboard />}
-          {activeTab === "analytics" && <AnalyticsContent />}
+          {activeTab === "Blog" && <AnalyticsContent />}
           {activeTab === "messages" && <MessagesContent />}
           {activeTab === "calendar" && <CalendarApp />}
           {activeTab === "settings" && <SettingsContent />}
@@ -162,14 +204,24 @@ export default function Dashboard() {
 }
 
 function SidebarItem({ icon, title, isActive, onClick, collapsed }) {
+  const theme = useSelector((state) => state.theme.mode);
+
   return (
     <li>
       <button
         onClick={onClick}
-        className={`flex items-center w-full p-2 rounded-md ${
+        className={`flex items-center justify-center w-full p-2 rounded-md ${
           isActive
-            ? "bg-blue-50 text-blue-600"
-            : "text-gray-600 hover:bg-gray-100"
+            ? `${
+                theme === "dark"
+                  ? "bg-gray-600 text-blue-600"
+                  : '"bg-blue-50 text-blue-600"'
+              }`
+            : `${
+                theme === "dark"
+                  ? "text-gray-100 hover:bg-gray-600"
+                  : "text-gray-600 hover:bg-gray-100"
+              }`
         }`}
       >
         <span className="flex items-center justify-center">{icon}</span>
@@ -179,13 +231,15 @@ function SidebarItem({ icon, title, isActive, onClick, collapsed }) {
   );
 }
 
-function DashboardContent() {
+function DashboardContent(data) {
+  const theme = useSelector((state) => state.theme.mode);
+
   return (
-    <div className="space-y-6">
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+    <div className="space-y-6 ">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 ">
         <StatCard
           title="Total Users"
-          value="2,543"
+          value={data.length}
           change="+12.5%"
           isPositive={true}
         />
@@ -210,95 +264,61 @@ function DashboardContent() {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-        <div className="bg-white p-6 rounded-lg shadow-sm lg:col-span-2">
+        <div
+          className={`${
+            theme === "dark" ? "bg-gray-800/[0.6]" : "bg-white"
+          } p-6 rounded-lg shadow-sm lg:col-span-2`}
+        >
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-lg font-medium">Sales Overview</h3>
-            <select className="border rounded-md px-2 py-1 text-sm">
+            <select
+              className={`${
+                theme === "dark" ? "bg-black" : "bg-gray-100"
+              } border rounded-md px-2 py-1 text-sm`}
+            >
               <option>Last 7 days</option>
               <option>Last 30 days</option>
               <option>Last 90 days</option>
             </select>
           </div>
-          <div className="h-64   bg-gray-50 rounded-md">
+          <div
+            className={`h-64 ${
+              theme === "dark" ? "bg-gray-500/[0.4]" : "bg-gray-100"
+            }   rounded-md`}
+          >
             <LineChart />
           </div>
         </div>
 
-        <div className="bg-white p-6 rounded-lg shadow-sm">
+        <div
+          className={`${
+            theme === "dark" ? "bg-gray-800/[0.6]" : "bg-white"
+          } p-6 rounded-lg shadow-sm`}
+        >
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-lg font-medium">Traffic Sources</h3>
-            <button className="text-blue-500 text-sm">View All</button>
           </div>
-          <div className="h-64 flex items-center justify-center bg-gray-50 rounded-md">
+          <div
+            className={`h-64 ${
+              theme === "dark" ? "bg-gray-500/[0.6]" : "bg-gray-100"
+            }   rounded-md`}
+          >
             <RadarChartExample />
           </div>
         </div>
       </div>
 
-      <div className="bg-white p-6 rounded-lg shadow-sm">
+      <div
+        className={`${
+          theme === "dark" ? "bg-gray-800/[0.6]" : "bg-white"
+        } p-6 rounded-lg shadow-sm`}
+      >
         <div className="flex items-center justify-between mb-4">
           <h3 className="text-lg font-medium">Recent Orders</h3>
           <button className="text-blue-500 text-sm">View All</button>
         </div>
         <div className="overflow-x-auto">
-          <table className="min-w-full divide-y divide-gray-200">
-            <thead className="bg-gray-50">
-              <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Order ID
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Customer
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Date
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Amount
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Status
-                </th>
-              </tr>
-            </thead>
-            <tbody className="bg-white divide-y divide-gray-200">
-              <TableRow
-                id="#ORD-0042"
-                customer="John Smith"
-                date="Apr 8, 2025"
-                amount="$240.00"
-                status="Completed"
-              />
-              <TableRow
-                id="#ORD-0041"
-                customer="Lisa Johnson"
-                date="Apr 7, 2025"
-                amount="$158.50"
-                status="Processing"
-              />
-              <TableRow
-                id="#ORD-0040"
-                customer="Michael Brown"
-                date="Apr 7, 2025"
-                amount="$89.99"
-                status="Completed"
-              />
-              <TableRow
-                id="#ORD-0039"
-                customer="Sarah Wilson"
-                date="Apr 6, 2025"
-                amount="$325.00"
-                status="Pending"
-              />
-              <TableRow
-                id="#ORD-0038"
-                customer="David Miller"
-                date="Apr 5, 2025"
-                amount="$112.50"
-                status="Completed"
-              />
-            </tbody>
-          </table>
+          <RecentOrders />
         </div>
       </div>
     </div>
@@ -306,8 +326,13 @@ function DashboardContent() {
 }
 
 function StatCard({ title, value, change, isPositive }) {
+  const theme = useSelector((state) => state.theme.mode);
   return (
-    <div className="bg-white p-6 rounded-lg shadow-sm">
+    <div
+      className={`${
+        theme === "dark" ? "bg-gray-800/[0.6]" : "bg-white"
+      } p-6 rounded-lg shadow-sm`}
+    >
       <p className="text-sm text-gray-500">{title}</p>
       <p className="text-2xl font-semibold mt-1">{value}</p>
       <p
@@ -334,10 +359,15 @@ function TableRow({ id, customer, date, amount, status }) {
         return "bg-gray-100 text-gray-800";
     }
   };
+  const theme = useSelector((state) => state.theme.mode);
 
   return (
     <tr>
-      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+      <td
+        className={`px-6 py-4 whitespace-nowrap text-sm font-medium ${
+          theme === "dark" ? "text-white" : "text-gray-900"
+        }`}
+      >
         {id}
       </td>
       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
@@ -362,20 +392,14 @@ function TableRow({ id, customer, date, amount, status }) {
   );
 }
 
-
-
-function ProductsContent() {
-  return (
-    <div className="bg-white p-6 rounded-lg shadow-sm">
-      <h3 className="text-lg font-medium mb-4">Products Management</h3>
-      <p className="text-gray-500">Product management content would go here.</p>
-    </div>
-  );
-}
-
 function AnalyticsContent() {
+  const theme = useSelector((state) => state.theme.mode);
   return (
-    <div className="bg-white p-6 rounded-lg shadow-sm">
+    <div
+      className={`${
+        theme === "dark" ? " bg-gray-800/[0.6]" : "bg-white"
+      } p-6 rounded-lg shadow-sm`}
+    >
       <h3 className="text-lg font-medium mb-4">Analytics Dashboard</h3>
       <p className="text-gray-500">Analytics content would go here.</p>
     </div>
@@ -383,28 +407,31 @@ function AnalyticsContent() {
 }
 
 function MessagesContent() {
+  const theme = useSelector((state) => state.theme.mode);
   return (
-    <div className="bg-white p-6 rounded-lg shadow-sm">
-      <h3 className="text-lg font-medium mb-4">Messages</h3>
-      <p className="text-gray-500">Messages content would go here.</p>
-    </div>
-  );
-}
-
-function CalendarContent() {
-  return (
-    <div className="bg-white p-6 rounded-lg shadow-sm">
-      <h3 className="text-lg font-medium mb-4">Calendar</h3>
-      <p className="text-gray-500">Calendar content would go here.</p>
+    <div
+      className={`${
+        theme === "dark" ? " bg-gray-800/[0.6]" : "bg-white"
+      } p-6 rounded-lg shadow-sm`}
+    >
+      <h3 className="text-lg font-medium mb-4">Orders</h3>
+      <Orders />
     </div>
   );
 }
 
 function SettingsContent() {
+  const theme = useSelector((state) => state.theme.mode);
   return (
-    <div className="bg-white p-6 rounded-lg shadow-sm">
+    <div
+      className={`${
+        theme === "dark" ? " bg-gray-800/[0.6]" : "bg-white"
+      } p-6 rounded-lg shadow-sm`}
+    >
       <h3 className="text-lg font-medium mb-4">Settings</h3>
-      <p className="text-gray-500">Settings content would go here.</p>
+      <p className="text-gray-500">
+        <UserSettings />
+      </p>
     </div>
   );
 }

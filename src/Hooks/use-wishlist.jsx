@@ -1,67 +1,49 @@
-"use client"
+// hooks/useWishlist.js
+"use client";
 
-import { useState, useEffect } from "react"
+import { useState, useEffect } from "react";
 
 export function useWishlist() {
-  const [wishlist, setWishlist] = useState([])
+  const [wishlist, setWishlist] = useState([]);
 
-  // Load wishlist from localStorage on initial render
+  // Load wishlist
   useEffect(() => {
-    const savedWishlist = localStorage.getItem("wishlist")
-    if (savedWishlist) {
+    const saved = localStorage.getItem("wishlist");
+    console.log("🔄 Loading wishlist from localStorage:", saved);
+    if (saved) {
       try {
-        setWishlist(JSON.parse(savedWishlist))
-      } catch (error) {
-        console.error("Failed to parse wishlist from localStorage:", error)
-        localStorage.removeItem("wishlist")
+        setWishlist(JSON.parse(saved));
+      } catch {
+        localStorage.removeItem("wishlist");
       }
     }
-  }, [])
-
-  // Save wishlist to localStorage whenever it changes
+  }, []);
+console.log(wis)
+  // Persist wishlist
   useEffect(() => {
-    localStorage.setItem("wishlist", JSON.stringify(wishlist))
-  }, [wishlist])
+    console.log("💾 Saving wishlist to localStorage:", wishlist);
+    localStorage.setItem("wishlist", JSON.stringify(wishlist));
+  }, [wishlist]);
 
-  const addToWishlist = (item) => {
-    setWishlist((prev) => {
-      // Check if item already exists in wishlist
-      if (prev.some((existingItem) => existingItem.id === item.id)) {
-        return prev
-      }
-      return [...prev, item]
-    })
-  }
-
-  const removeFromWishlist = (itemId) => {
-    setWishlist((prev) => prev.filter((item) => item.id !== itemId))
-  }
-
-  const isInWishlist = (itemId) => {
-    return wishlist.some((item) => item.id === itemId)
-  }
+  const addToWishlist = (item) =>
+    setWishlist((prev) =>
+      prev.some((i) => i.id === item.id) ? prev : [...prev, item]
+    );
+  const removeFromWishlist = (id) =>
+    setWishlist((prev) => prev.filter((i) => i.id !== id));
+  const isInWishlist = (id) => wishlist.some((i) => i.id === id);
 
   const toggleWishlist = (item) => {
     if (isInWishlist(item.id)) {
-      removeFromWishlist(item.id)
-      return false
+      removeFromWishlist(item.id);
+      return false;
     } else {
-      addToWishlist(item)
-      return true
+      addToWishlist(item);
+      return true;
     }
-  }
+  };
 
-  const clearWishlist = () => {
-    setWishlist([])
-  }
+  const clearWishlist = () => setWishlist([]);
 
-  return {
-    wishlist,
-    addToWishlist,
-    removeFromWishlist,
-    isInWishlist,
-    toggleWishlist,
-    clearWishlist,
-  }
+  return { wishlist, addToWishlist, removeFromWishlist, isInWishlist, toggleWishlist, clearWishlist };
 }
-

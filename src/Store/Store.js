@@ -5,7 +5,7 @@ import FetchLangDataSlice from '../Redux/FetchLangData'
 import TrendingBlogReducer from "../Redux/TrendingBlog";
 import   productDataReducer  from "../Redux/ProductsSlice";
 import wishlistReducer from '../Redux/WishlistSlice'
-
+import activeTabReducer from '../Redux/ActiveTabSlice'
 
 export const store = configureStore({
   reducer: {
@@ -15,6 +15,7 @@ export const store = configureStore({
     data:FetchLangDataSlice,
     BlogData:TrendingBlogReducer,
     ProductData: productDataReducer,
-    wishlist:wishlistReducer
+    wishlist:wishlistReducer,
+    activeTab: activeTabReducer,
   }, 
 });

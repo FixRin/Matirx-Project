@@ -10,125 +10,64 @@ import { FaHeart } from "react-icons/fa";
 import { product } from "../Store";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchProductData } from "../Redux/ProductsSlice";
-import { selectIsInWishlist, toggleWishlist } from "../Redux/WishlistSlice";
-
+import { initializeWishlist, selectIsInWishlist, toggleWishlist } from "../Redux/WishlistSlice";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 export default function ProductPage() {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const { slug } = useParams();
+
+  // Initialize wishlist from localStorage
+  useEffect(() => {
+    dispatch(initializeWishlist());
+  }, [dispatch]);
+
+  // Redux: fetch product data
   const { productItems, status, error } = useSelector(
     (state) => state.ProductData
   );
-  
-  const dispatch = useDispatch();
   useEffect(() => {
     if (status === "idle") {
       dispatch(fetchProductData());
     }
   }, [status, dispatch]);
 
+  // Find matching product by slug
+  const product = productItems.find(
+    (p) => slugify(p.title) === slug
+  );
+  useEffect(() => {
+    if (status === "succeeded" && !product) navigate("/");
+  }, [status, product, navigate]);
+
+  // Loading / error
+  if (status === "loading" || !product) {
+    return <div className="container mx-auto py-10">Loading...</div>;
+  }
   if (status === "failed") {
     return <div>Error: {error}</div>;
   }
-  const { slug } = useParams();
-  const navigate = useNavigate();
 
-  // Find the product that matches the slug
-  const producta = productItems[0].Products.find(
-    (product) => slugify(product.title) === slug
+  // Wishlist and cart hooks
+  const inWishlist = useSelector((state) =>
+    selectIsInWishlist(state, product.id)
   );
-
-  // If no product is found, redirect to home page
-  useEffect(() => {
-    if (!producta) {
-      navigate("/");
-    }
-  }, [producta, navigate]);
-
-  // If product is still loading or not found, show loading state
-  if (!producta) {
-    return <div className="container mx-auto py-10">Loading...</div>;
-  }
-
-  const isInWishlist = useSelector((state) => selectIsInWishlist(state, producta.id))
-
-  const handleToggleWishlist = () => {
-    dispatch(toggleWishlist(producta))
-   add===true?setAdd(false):setAdd(true)
-  }
-
-  
-  const [quantity, setQuantity] = useState(1);
-  const [add,setAdd] = useState(true)
-  const [selectedColor, setSelectedColor] = useState("black");
-  const [selectedSize, setSelectedSize] = useState("M");
-  const [reviewText, setReviewText] = useState("");
-  const [newReview, setNewReview] = useState({
-    name: "fsdf",
-    rating: 5,
-    comment: "",
-  });
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setNewReview({
-      ...newReview,
-      [name]: name === "rating" ? Number(value) : value,
-    });
-  };
   const { addItem } = useCart();
 
-  const textRef = useRef();
 
-  const incrementQuantity = () => {
-    setQuantity(quantity + 1);
+  const [selectedColor, setSelectedColor] = useState("black");
+  const [selectedSize, setSelectedSize] = useState("M");
+
+  // Handlers
+  const handleWishlistClick = () => {
+    dispatch(toggleWishlist(product));
+    toast[inWishlist ? "info" : "success"](
+      inWishlist ? "Removed from wishlist" : "Added to wishlist"
+    );
   };
+ 
 
-  const decrementQuantity = () => {
-    if (quantity > 1) {
-      setQuantity(quantity - 1);
-    }
-  };
-  const [reviews, setReviews] = useState([
-    {
-      name: "Amelia M.",
-      date: "March 14, 2023",
-      rating: 5,
-      review:
-        "Didn't buy enough, need more! This is such a versatile staple piece. The cotton is very comfortable to wear and washes well. I wish I had ordered more colors.",
-    },
-    {
-      name: "Jessica P.",
-      date: "February 28, 2023",
-      rating: 5,
-      review:
-        "Very comfy and looks like pics! The material is soft and comfortable. I love the good feeling material that it has and the fit is perfect.",
-    },
-    {
-      name: "Laura G.",
-      date: "February 23, 2023",
-      rating: 4,
-      review:
-        "I bought two of these quality cotton t-shirts, and will be back for more in other colors! I love the way they fit and wash. I've had mine for over a month now and they still look great.",
-    },
-  ]);
-  const handleStar = () => {};
-  const handleText = (e) => {
-    e.preventDefault();
-
-    const review = {
-      id: reviews.length + 1,
-      name: "sdfsf",
-      rating: "3",
-      comment: newReview.comment,
-      date: new Date().toISOString().split("T")[0],
-    };
-
-    setReviews([...reviews, review]);
-    console.log(review);
-    // Reset form
-    setNewReview({
-      name: "",
-      rating: 5,
-      comment: setReviewText,
-    });
-  };
   const theme = useSelector((state) => state.theme.mode);
   // Star icon component using HTML/CSS
   const StarIcon = ({ filled, forRef }) => (
@@ -142,20 +81,20 @@ export default function ProductPage() {
     </svg>
   );
   return (
-    <div    className={` ${
-      theme === "dark" ? "bg-texture bg-gray-900 text-white  " : "bg-texture "
-    }`}>
-      {!producta ? (
-        <div></div>
-      ) : (
+    <div
+      className={` ${
+        theme === "dark" ? "bg-texture bg-gray-900 text-white  " : "bg-texture "
+      }`}
+    >
+   
         <div className="container mx-auto px-4 py-24 max-w-6xl">
           <div className="grid md:grid-cols-2 gap-8">
             {/* Product Images */}
             <div className="space-y-4">
               <div className="aspect-square relative overflow-hidden rounded-md">
                 <img
-                  src={producta.img || "https://placehold.co/600"}
-                  alt={producta.title}
+                  src={product.img || "https://placehold.co/600"}
+                  alt={product.title}
                   className="w-full h-full object-cover"
                 />
               </div>
@@ -165,8 +104,8 @@ export default function ProductPage() {
             <div className="space-y-6">
               <div>
                 <div className="flex justify-between items-start">
-                  <h1 className="text-2xl font-medium">{producta.title}</h1>
-                  <span className="text-xl font-medium">{producta.price}$</span>
+                  <h1 className="text-2xl font-medium">{product.title}</h1>
+                  <span className="text-xl font-medium">{product.price}$</span>
                 </div>
                 <div className="flex items-center mt-1">
                   <div className="flex">
@@ -231,35 +170,48 @@ export default function ProductPage() {
                 <div className="flex items-center gap-4">
                   <div
                     className="flex items-center justify-center border rounded-md w-10 h-10"
-                  
-                    onClick={handleToggleWishlist}
+                    onClick={handleWishlistClick}
                   >
-                    {add ? <FaRegHeart className="HeartEffect" /> : <FaHeart className="HeartEffect" />}
+                    {!inWishlist  ? (
+                      <FaRegHeart className="HeartEffect" />
+                    ) : (
+                      <FaHeart className="HeartEffect" />
+                    )}
                   </div>
                   <button
-                    onClick={() =>
+                    onClick={() => {
                       addItem({
-                        id: producta.id,
-                        price: producta.price,
-                        name: producta.title,
-                        image: producta.img,
+                        id: product.id,
+                        price: product.price,
+                        name: product.title,
+                        image: product.img,
                         color: selectedColor,
-                        desc:producta.desc
-                      })
-                    }
+                        desc: product.desc,
+                      });
+                      toast.success("Added to cart !", {
+                        position: "bottom-left",
+                        className:'toast-message'
+                      });
+                    }}
                     className="flex-1  h-[40px] mx-5 button-cutout-black group justify-center   inline-flex items-center bg-gradient-to-b from-25% to-75% bg-[length:100%_400%] font-bold transition-[filter,background-position] duration-300 hover:bg-bottom gap-3 px-1 text-lg ~py-2.5/3 from-brand-purple to-brand-lime text-white hover:text-black"
                   >
                     Add to cart
                   </button>
+                  <ToastContainer
+                    position="bottom-left"
+                    autoClose={3000}
+                    hideProgressBar={false}
+                    newestOnTop
+                    closeOnClick
+                    pauseOnHover
+                  />
                 </div>
 
                 {/* Product Information */}
                 <div className="space-y-4">
                   <div>
                     <h3 className="font-medium mb-2">Description</h3>
-                    <p className="text-sm text-gray-600">
-                {producta.desc}
-                    </p>
+                    <p className="text-sm text-gray-600">{product.desc}</p>
                     <p className="text-sm text-gray-600 mt-2">
                       Looking for the perfect tee? The Basic Tee is comfortable
                       in a range of situations and pairs well with anything.
@@ -303,7 +255,7 @@ export default function ProductPage() {
             <ProductReviews />
           </div>
         </div>
-      )}
+   
     </div>
   );
 }

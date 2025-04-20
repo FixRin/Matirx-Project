@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Home from "./Pages/Home";
 import About from "./Pages/About";
@@ -20,9 +20,36 @@ import OrderConfirmation from "./Pages/OrderConfirmation";
 import ProductDetails from "./Pages/ProductDetails";
 import UpdatePassword from "./Pages/UpdatePassword";
 import Test from "./Pages/Test";
+import supabase from "./Utils/Supabase";
+import UserDashboard from "./Pages/UserDashboard";
+import LoginToPage from "./Pages/LoginToPage";
+import ProductEdit from "./Pages/ProductEdit";
+import { useParams } from "react-router-dom";
+import ScrollToTop from "./Components/ScrollTop";
+import PaymentConfirmation from "./Pages/PaymentConfirmation";
 const App = () => {
+  const [session, setSession] = useState(null);
+
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session);
+    });
+
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      setSession(session);
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
+
+  const { id } = useParams(); // id should match the :id in your Route
+
+  console.log("Route param:", id); // This should print the ID in the console
   return (
     <BrowserRouter>
+     <ScrollToTop />
       <Header />
 
       <Routes>
@@ -34,12 +61,46 @@ const App = () => {
         <Route path="/blog" element={<Blog />}></Route>
         <Route path="/products" element={<Products />}></Route>
         <Route path="/login" element={<Login />}></Route>
-        <Route path="/wishlist" element={<Wishlist />}></Route>
+        <Route
+          path="/wishlist"
+          element={session ? <Wishlist /> : <LoginToPage />}
+        ></Route>
         <Route path="/blogdetails" element={<BlogDetails />}></Route>
         <Route path="/changepassword" element={<ChangePassword />}></Route>
         <Route path="/register" element={<Register />}></Route>
-        <Route path={"/dashboard"} element={<Dashboard />}></Route>
-        <Route path={"/checkout"} element={<Checkout />}></Route>
+        <Route path="/paymentConfirmation/:slug" element={<PaymentConfirmation />}></Route>
+        <Route
+          path={"/dashboard"}
+          element={
+            session ? (
+              session.user.email === "chessaydin709@gmail.com" ? (
+                <Dashboard />
+              ) : (
+                <UserDashboard />
+              )
+            ) : (
+              <LoginToPage />
+            )
+          }
+        ></Route>
+        <Route
+          path={"/checkout"}
+          element={session ? <Checkout /> : <LoginToPage />}
+        ></Route>
+        <Route
+          path="/productedit/:slug"
+          element={
+            session ? (
+              session.user.email === "chessaydin709@gmail.com" ? (
+                <ProductEdit />
+              ) : (
+                <NotFound />
+              )
+            ) : (
+              <LoginToPage />
+            )
+          }
+        ></Route>
         <Route
           path={"/orderConfirmation"}
           element={<OrderConfirmation />}

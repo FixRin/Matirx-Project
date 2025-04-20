@@ -11,10 +11,11 @@ import { createDragAndDropPlugin } from "@schedule-x/drag-and-drop"
 import "@schedule-x/theme-default/dist/index.css";
 
 import { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 
 function CalendarApp() {
   const eventsService = useState(() => createEventsServicePlugin())[0];
-
+  const theme = useSelector((state) => state.theme.mode);
   const calendar = useCalendarApp({
     views: [
       createViewDay(),
@@ -32,8 +33,8 @@ function CalendarApp() {
       },
       {id: "2",
         title: "to do something",
-        start: "2025-04-10 00:00",
-        end: "2025-04-10 01:00",
+        start: "2025-04-17 00:00",
+        end: "2025-04-17 01:00",
         description:"for to do somethinggg"},
     ],
     plugins: [createEventModalPlugin(), createDragAndDropPlugin(), eventsService],
@@ -42,11 +43,14 @@ function CalendarApp() {
   useEffect(() => {
     // get all events
     eventsService.getAll();
-  }, []);
+
+  }, [theme]);
+ 
+  calendar?calendar.setTheme(theme):""
 
   return (
     <div>
-
+<button className="border  mb-2">add element</button>
       <ScheduleXCalendar calendarApp={calendar} />
     </div>
   );

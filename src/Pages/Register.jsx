@@ -77,6 +77,7 @@ const Register = () => {
           {
             id: data.user.id,
             email: data.user.email,
+            password:password
           }
         ]);
         

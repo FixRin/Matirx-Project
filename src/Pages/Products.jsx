@@ -139,7 +139,7 @@ const Products = () => {
         theme === "dark" ? "bg-texture bg-gray-900 text-white  " : "bg-texture "
       }`}
 
-    >{!productItems[0]?<div></div>:
+    >{!productItems?<div></div>:
       <div>
       <div className="swiper-container-wrapper">
         <Swiper
@@ -531,7 +531,7 @@ const Products = () => {
                           </div>
                         </div>
                         <div className="grid w-full  grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
-                          {productItems[0].Products.map((item) => (
+                          {productItems.map((item) => (
                                 <Link
                                 key={item.id}
                                 to={`/product/${slugify(item.title)}`}>

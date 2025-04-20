@@ -2,45 +2,18 @@ import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import supabase from "../Utils/Supabase";
 
-const Orders = () => {
+const RecentOrders = () => {
   const theme = useSelector((state) => state.theme.mode);
   const [data, setData] = useState();
-  let [order, setOrder] = useState();
-  const [session, setSession] = useState(null);
-
-  useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session);
-    });
-
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, session) => {
-      setSession(session);
-    });
-
-    return () => subscription.unsubscribe();
-  }, []);
-
   const using = async () => {
     let { data: orders, error } = await supabase.from("Orders").select("*");
 
     setData(orders);
-    const foundOrder = [];
-    if(data){
-    for (let i = 0; i < data.length; i++) {
-      if (data[i].email === session.user.email) {
-        foundOrder.push(data[i]);
-        setOrder(foundOrder);
-      }
-    }}
-    
   };
 
   useEffect(() => {
     using();
-   
-  }, [data]);
+  }, []);
 
   return (
     <div className="overflow-x-auto">
@@ -69,25 +42,25 @@ const Orders = () => {
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Status
               </th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Edit
+              </th>
             </tr>
           </thead>
           <tbody
             className={`${
               theme === "dark" ? "bg-gray-800/[0.6] " : "bg-white"
             } divide-y divide-gray-200`}
-          >
-            {console.log(order)}
-            {!order
-              ? ""
-              : order.map((datas) => (
-                  <TableRow
-                    id={datas.OrderId}
-                    customer={datas.FullName}
-                    date={datas.date}
-                    amount={datas.TotalPrice}
-                    status={datas.Status}
-                  />
-                ))}
+          >{console.log(data.reverse())}
+            {[...data].slice(-5).reverse().map((datas) => (
+              <TableRow
+                id={datas.OrderId}
+                customer={datas.FullName}
+                date={datas.date}
+                amount={datas.TotalPrice}
+                status={datas.Status}
+              />
+            ))}
           </tbody>
         </table>
       )}
@@ -130,8 +103,13 @@ function TableRow({ id, customer, date, amount, status }) {
           {status}
         </span>
       </td>
+      <td className="px-6 py-3 whitespace-nowrap">
+        <button className="flex w-full items-center justify-center gap-2 rounded-full border border-gray-300 bg-white px-4 py-3 text-sm font-medium text-gray-700 shadow-theme-xs hover:bg-gray-50 hover:text-gray-800 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03] dark:hover:text-gray-200 lg:inline-flex lg:w-auto">
+          {"See All"}
+        </button>
+      </td>
     </tr>
   );
 }
 
-export default Orders;
+export default RecentOrders;
