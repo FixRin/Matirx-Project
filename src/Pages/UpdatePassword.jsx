@@ -3,8 +3,10 @@
 import { useState } from "react"
 import supabase from "../Utils/Supabase"
 import { getSupabaseErrorMessage } from "../Utils/supabase-errors"
+import { useSelector } from "react-redux"
 
 export default function UpdatePassword() {
+  const theme=useSelector((s)=>s.theme.mode)
   const [password, setPassword] = useState("")
   const [loading, setLoading] = useState(false)
   const [success, setSuccess] = useState(false)
@@ -50,7 +52,9 @@ export default function UpdatePassword() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8 bg-texture">
+    <div className={`${
+      theme === "dark" ? "bg-texture bg-gray-900 text-white" : "bg-texture"
+    } min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8 `}>
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
         <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
           <div className="text-center mb-8">
@@ -75,7 +79,7 @@ export default function UpdatePassword() {
                     required
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                    className="text-black appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                   />
                   <p className="mt-2 text-sm text-gray-500">
                     Password must be at least 8 characters long and contain uppercase, lowercase, numbers and a special

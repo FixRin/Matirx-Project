@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import supabase from "../Utils/Supabase";
+import { Link } from "react-router-dom";
+import { slugify } from "../Store/SlugConfig";
 
 const Orders = () => {
   const theme = useSelector((state) => state.theme.mode);
@@ -104,9 +106,11 @@ function TableRow({ id, customer, date, amount, status }) {
         </span>
       </td>
       <td className="px-6 py-3 whitespace-nowrap">
+        <Link to={`/orderDetail/${slugify(id)}`}>
         <button className="flex w-full items-center justify-center gap-2 rounded-full border border-gray-300 bg-white px-4 py-3 text-sm font-medium text-gray-700 shadow-theme-xs hover:bg-gray-50 hover:text-gray-800 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03] dark:hover:text-gray-200 lg:inline-flex lg:w-auto">
-          {"See All"}
+          {"See All Detail"}
         </button>
+        </Link>
       </td>
     </tr>
   );

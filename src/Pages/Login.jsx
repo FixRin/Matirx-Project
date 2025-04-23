@@ -3,11 +3,13 @@ import { Link, useNavigate } from "react-router-dom";
 import supabase from "../Utils/Supabase";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchData } from "../Redux/FetchLangData";
+import { FiEye, FiEyeOff } from "react-icons/fi";
 const Login = () => {
   const theme = useSelector((state) => state.theme.mode);
   let navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [successMessage, setSuccessMessage] = useState("");
@@ -113,17 +115,24 @@ const Login = () => {
                     </Link>
                   </div>
                 </div>
-                <div className="mt-2">
+                <div className="mt-2 relative">
                   <input
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    type="password"
+                    type={showPassword ? 'text' : 'password'}
                     name="password"
                     id="password"
                     autoComplete="current-password"
                     required
                     className="block w-full rounded-md bg-white px-3 py-1.5 text-base  outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
                   />
+                  <button
+                    type="button"
+                    className="absolute top-2  right-2"
+                    onClick={() => setShowPassword(!showPassword)}
+                  >
+                    {showPassword ? <FiEyeOff /> : <FiEye />}
+                  </button>
                 </div>
               </div>
               <div>

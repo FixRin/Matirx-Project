@@ -26,7 +26,7 @@ import LoginToPage from "./Pages/LoginToPage";
 import ProductEdit from "./Pages/ProductEdit";
 import { useParams } from "react-router-dom";
 import ScrollToTop from "./Components/ScrollTop";
-import PaymentConfirmation from "./Pages/PaymentConfirmation";
+import OrderDetailsPage from "./Pages/OrderDetailsPage";
 const App = () => {
   const [session, setSession] = useState(null);
 
@@ -65,10 +65,10 @@ const App = () => {
           path="/wishlist"
           element={session ? <Wishlist /> : <LoginToPage />}
         ></Route>
-        <Route path="/blogdetails" element={<BlogDetails />}></Route>
-        <Route path="/changepassword" element={<ChangePassword />}></Route>
-        <Route path="/register" element={<Register />}></Route>
-        <Route path="/paymentConfirmation/:slug" element={<PaymentConfirmation />}></Route>
+        <Route path="/blogdetails/:section/:slug" element={<BlogDetails />}></Route>
+        <Route path="/changepassword" element={session ? <ChangePassword /> : <LoginToPage />}></Route>
+        <Route path="/register" element={!session ? <Register />: <NotFound />}></Route>
+      
         <Route
           path={"/dashboard"}
           element={
@@ -102,11 +102,12 @@ const App = () => {
           }
         ></Route>
         <Route
-          path={"/orderConfirmation"}
+          path={"/orderConfirmation/:slug"}
           element={<OrderConfirmation />}
         ></Route>
         <Route path="/product/:slug" element={<ProductDetails />} />
         <Route path="/update-password" element={<UpdatePassword />}></Route>
+        <Route path="/orderDetail/:slug" element={<OrderDetailsPage/>}></Route>
         <Route path="/test" element={<Test />}></Route>
         <Route path="*" element={<NotFound />}></Route>
       </Routes>

@@ -28,6 +28,7 @@ export default function Component() {
   }
   let DivRef = useRef();
   const [isHoverable, setIsHoverable] = useState(true);
+  const [isClickable, setIsClickable] = useState(true)
   const [width, setWidth] = useState(window.innerWidth);
     
 
@@ -46,7 +47,7 @@ export default function Component() {
     return () => {
       window.removeEventListener("resize", handleResize)
     }
-  }, [])
+  }, [width])
 
   // First animation
   useGSAP(() => {
@@ -64,8 +65,8 @@ export default function Component() {
             end: 1100,
             scrub: 3,
           },
-          onStart: () => setIsHoverable(false),
-          onReverseComplete: () => setIsHoverable(true),
+          onStart: () => {setIsHoverable(false),setIsClickable(false)},
+          onReverseComplete: () => {setIsHoverable(true),setIsClickable(true)}
         },
       )
     } else {
@@ -90,7 +91,7 @@ export default function Component() {
             end: 2850,
             scrub: 3,
           },
-          onStart: () => setIsHoverable(false),
+          onStart: () => {setIsHoverable(false),setIsClickable(false)},
         },
       )
     } else {
@@ -115,7 +116,7 @@ export default function Component() {
             end: 2350,
             scrub: 3,
           },
-          onStart: () => setIsHoverable(false),
+          onStart: () =>{setIsHoverable(false),setIsClickable(false)},
         },
       )
     } else {
@@ -140,7 +141,7 @@ export default function Component() {
             end: 1550,
             scrub: 3,
           },
-          onStart: () => setIsHoverable(false),
+          onStart: () => {setIsHoverable(false),setIsClickable(false)},
         },
       )
     } else {
@@ -156,7 +157,8 @@ export default function Component() {
           {product.map((item) => (
              <Link
              key={item.id}
-             to={`/product/${slugify(item.title)}`}
+             
+             to={isClickable ? `/product/${slugify(item.title)}` : '#'}
              
            >
             <div

@@ -1,16 +1,20 @@
 import React from "react";
 import '../Css/NotFound.css'
 import { Link } from "react-router-dom";
+import { useSelector } from "react-redux";
 const NotFound = () => {
+    const theme = useSelector((state) => state.theme.mode);
   return (
-    <div className="site bg-texture" >
+    <div className={`${
+      theme === "dark" ? "bg-texture bg-gray-900 text-white" : "bg-texture"
+    } site`}>
       <div className="sketch" style={{marginTop:'5rem'}}>
         <div className="bee-sketch red" />
         <div className="bee-sketch blue" />
       </div>
       <h1>
         You can't be here !
-        <small>Go to login</small>
+        <small>Go to login page</small>
         <Link to="/login">
         <button
         

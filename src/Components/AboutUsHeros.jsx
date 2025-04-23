@@ -19,8 +19,8 @@ const AboutUsHeros = () => {
   return (
     <div>{ console.log(items[5])}
       {!items[5]?<div></div>:
-        <div className="flex-col sm:flex-col flex lg:flex-row items-center justify-between w-100 mx-20 mb-20 pt-40 gap-40 ">
-          <div className="w-[80%] ">
+        <div className="flex flex-col lg:flex-row items-center justify-between mx-20 mb-20 pt-40 gap-40">
+          <div className="w-[100%] about-section text-base leading-relaxed space-y-4">
             <h1 className="text-6xl mb-10 text-center text-[#d9f154]">
               {items[5][Lang].About[0]}
             </h1>
@@ -30,7 +30,8 @@ const AboutUsHeros = () => {
           </div>
           <div>
             <img
-              className="w-[350px]"
+              className="w-[650px]"
+               alt="Old-school TV displaying static"
               src="https://media.tenor.com/hX4vmCCXnwoAAAAj/static-tv-no-background.gif"
             />
           </div>

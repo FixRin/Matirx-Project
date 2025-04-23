@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import Hero from "../Components/Hero";
 import Index from "../../Canvas";
-import Products from "../Components/Products";
+import Products from "../Components/LatestProducts";
 import Slider from "../Components/Slider";
 import NewsLetter from "../Components/NewsLetter";
 import { useDispatch, useSelector } from "react-redux";

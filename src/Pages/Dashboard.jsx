@@ -27,6 +27,7 @@ import UsersProfile from "../Components/UsersProfile";
 import ProductDatasDashboard from "../Components/ProductDatasDashboard";
 import Orders from "../Components/Orders";
 import RecentOrders from "../Components/RecentOrders";
+import BlogEdit from "../Components/BlogEdit";
 export default function Dashboard() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [activeTab, setActiveTab] = useState("dashboard");
@@ -239,7 +240,7 @@ function DashboardContent(data) {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 ">
         <StatCard
           title="Total Users"
-          value={data.length}
+          value={data.data&&data.data.length}
           change="+12.5%"
           isPositive={true}
         />
@@ -400,8 +401,8 @@ function AnalyticsContent() {
         theme === "dark" ? " bg-gray-800/[0.6]" : "bg-white"
       } p-6 rounded-lg shadow-sm`}
     >
-      <h3 className="text-lg font-medium mb-4">Analytics Dashboard</h3>
-      <p className="text-gray-500">Analytics content would go here.</p>
+      <h3 className="text-lg font-medium mb-4">Blog Edit</h3>
+      <p className="text-gray-500">{<BlogEdit/>}</p>
     </div>
   );
 }
