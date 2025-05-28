@@ -27,6 +27,8 @@ import ProductEdit from "./Pages/ProductEdit";
 import { useParams } from "react-router-dom";
 import ScrollToTop from "./Components/ScrollTop";
 import OrderDetailsPage from "./Pages/OrderDetailsPage";
+import Loader from "./Components/Loader";
+import { useDispatch, useSelector } from "react-redux";
 const App = () => {
   const [session, setSession] = useState(null);
 
@@ -44,75 +46,99 @@ const App = () => {
     return () => subscription.unsubscribe();
   }, []);
 
+  const Lang = useSelector((state) => state.lang.mode);
+ 
+
   const { id } = useParams(); // id should match the :id in your Route
 
   console.log("Route param:", id); // This should print the ID in the console
   return (
     <BrowserRouter>
-     <ScrollToTop />
-      <Header />
+      {!Lang ? (
+        <div className="w-full h-screen bg-texture  bg-gray-900">
+          <Loader />
+        </div>
+      ) : (
+        <div>
+          <ScrollToTop />
 
-      <Routes>
-        <Route path={"/"} element={<Home />}></Route>
-        <Route path={"/home"} element={<Home />}></Route>
-        <Route path="/about" element={<About />}></Route>
-        <Route path="/contact" element={<Contact />}></Route>
-        <Route path="/customizer" element={<Customizer />}></Route>
-        <Route path="/blog" element={<Blog />}></Route>
-        <Route path="/products" element={<Products />}></Route>
-        <Route path="/login" element={<Login />}></Route>
-        <Route
-          path="/wishlist"
-          element={session ? <Wishlist /> : <LoginToPage />}
-        ></Route>
-        <Route path="/blogdetails/:section/:slug" element={<BlogDetails />}></Route>
-        <Route path="/changepassword" element={session ? <ChangePassword /> : <LoginToPage />}></Route>
-        <Route path="/register" element={!session ? <Register />: <NotFound />}></Route>
-      
-        <Route
-          path={"/dashboard"}
-          element={
-            session ? (
-              session.user.email === "chessaydin709@gmail.com" ? (
-                <Dashboard />
-              ) : (
-                <UserDashboard />
-              )
-            ) : (
-              <LoginToPage />
-            )
-          }
-        ></Route>
-        <Route
-          path={"/checkout"}
-          element={session ? <Checkout /> : <LoginToPage />}
-        ></Route>
-        <Route
-          path="/productedit/:slug"
-          element={
-            session ? (
-              session.user.email === "chessaydin709@gmail.com" ? (
-                <ProductEdit />
-              ) : (
-                <NotFound />
-              )
-            ) : (
-              <LoginToPage />
-            )
-          }
-        ></Route>
-        <Route
-          path={"/orderConfirmation/:slug"}
-          element={<OrderConfirmation />}
-        ></Route>
-        <Route path="/product/:slug" element={<ProductDetails />} />
-        <Route path="/update-password" element={<UpdatePassword />}></Route>
-        <Route path="/orderDetail/:slug" element={<OrderDetailsPage/>}></Route>
-        <Route path="/test" element={<Test />}></Route>
-        <Route path="*" element={<NotFound />}></Route>
-      </Routes>
+          <Header />
 
-      <Footer />
+          <Routes>
+            <Route path={"/"} element={<Home />}></Route>
+            <Route path={"/home"} element={<Home />}></Route>
+            <Route path="/about" element={<About />}></Route>
+            <Route path="/contact" element={<Contact />}></Route>
+            <Route path="/customizer" element={<Customizer />}></Route>
+            <Route path="/blog" element={<Blog />}></Route>
+            <Route path="/products" element={<Products />}></Route>
+            <Route path="/login" element={<Login />}></Route>
+            <Route
+              path="/wishlist"
+              element={session ? <Wishlist /> : <LoginToPage />}
+            ></Route>
+            <Route
+              path="/blogdetails/:section/:slug"
+              element={<BlogDetails />}
+            ></Route>
+            <Route
+              path="/changepassword"
+              element={session ? <ChangePassword /> : <LoginToPage />}
+            ></Route>
+            <Route
+              path="/register"
+              element={!session ? <Register /> : <NotFound />}
+            ></Route>
+
+            <Route
+              path={"/dashboard"}
+              element={
+                session ? (
+                  session.user.email === "chessaydin709@gmail.com" ? (
+                    <Dashboard />
+                  ) : (
+                    <UserDashboard />
+                  )
+                ) : (
+                  <LoginToPage />
+                )
+              }
+            ></Route>
+            <Route
+              path={"/checkout"}
+              element={session ? <Checkout /> : <LoginToPage />}
+            ></Route>
+            <Route
+              path="/productedit/:slug"
+              element={
+                session ? (
+                  session.user.email === "chessaydin709@gmail.com" ? (
+                    <ProductEdit />
+                  ) : (
+                    <NotFound />
+                  )
+                ) : (
+                  <LoginToPage />
+                )
+              }
+            ></Route>
+            <Route
+              path={"/orderConfirmation/:slug"}
+              element={<OrderConfirmation />}
+            ></Route>
+            <Route path="/product/:slug" element={<ProductDetails />} />
+            <Route path="/update-password" element={<UpdatePassword />}></Route>
+            <Route
+              path="/orderDetail/:slug"
+              element={<OrderDetailsPage />}
+            ></Route>
+            <Route path="/test" element={<Test />}></Route>
+            <Route path="*" element={<NotFound />}></Route>
+          </Routes>
+
+          <Footer />
+        </div>
+      )}
     </BrowserRouter>
   );
 };
