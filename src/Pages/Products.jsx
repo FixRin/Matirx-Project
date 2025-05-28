@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState, useMemo } from "react";
 import "../Css/Products.css";
 ("use client");
-import designPhoto from "../Assets/Images/Wear.png";
+import designPhoto from "../Assets/Images/wear.png";
 import { Transition } from "@headlessui/react";
 
 import { Swiper, SwiperSlide } from "swiper/react";
