@@ -71,6 +71,7 @@
     "react-spring": "^9.7.5",
     "react-use-cart": "^1.14.0",
     "react-use-wishlist": "^1.0.1",
+    "react-toastify": "^9.2.3",
     "recharts": "^2.15.1",
     "scss": "^0.2.4",
     "slugify": "^1.6.6",
