@@ -165,12 +165,12 @@ const {cartTotal} = useCart()
           >
             <Link to="/" className="">
               <img
-                src=".\src\Assets\Images\pixel.png"
+                src=".\pixel.png"
                 alt="Logo"
                 className="w-24 h-24 object-contain"
               />
             </Link>
-            <div className={`${theme==='dark'?'xl:block flex-1 xl:flex hidden  text-gray-300   justify-center gap-5 Pages':'xl:block flex-1 xl:flex hidden     justify-center gap-5 Pages'}`}>
+            <div className={`${theme==='dark'?' flex-1 xl:flex hidden  text-gray-300   justify-center gap-5 Pages':'flex-1 xl:flex hidden     justify-center gap-5 Pages'}`}>
               <ul className="flex-1 flex items-center  justify-center gap-5 Pages ">
                 <li>
                   <NavLink to="/" className="homeLink">
