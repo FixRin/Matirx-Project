@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from "react"
 import "../Css/Footer.css"
-import logo from '../Assets/Images/pixel.png'
+
 import { useSelector } from "react-redux";
 export default function Footer() {
   const bubblesContainerRef = useRef(null)
@@ -28,7 +28,7 @@ export default function Footer() {
         <div className="footer-content">
           <div className="about-logo">
             <img
-              src={logo}
+              src="/pixel.png"
               alt="Your Logo"
             />
           </div>
